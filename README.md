@@ -1,18 +1,46 @@
-# Archi MCP Server
+# Archi MCP Axioma
 
-An Eclipse PDE plugin for [Archi](https://www.archimatetool.com/) that exposes ArchiMate models through the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/), enabling LLMs to query, analyse, and modify enterprise architecture models through natural language.
+**Una base sólida para automatizar arquitecturas ArchiMate.**
 
-## What It Does
+Archi MCP Axioma es un proyecto open source para consultar, analizar y modificar
+modelos ArchiMate mediante [Model Context Protocol (MCP)](https://modelcontextprotocol.io/).
+Su nombre combina la integración con [Archi](https://www.archimatetool.com/)
+con una identidad propia: Axioma, como punto de partida para construir
+arquitecturas coherentes y verificables.
 
-Archi MCP Server embeds an HTTP server inside Archi that speaks MCP. Once running, any MCP-compatible LLM client (Claude, Cline, LM Studio, etc.) can connect and interact with the currently open ArchiMate model — asking questions, searching elements, traversing relationships, composing view diagrams, and even creating or modifying model content.
+[Repositorio](https://github.com/h0w4r/archi-mcp-axioma) ·
+[Incidencias](https://github.com/h0w4r/archi-mcp-axioma/issues) ·
+[Licencia MIT](LICENSE)
 
-The server provides **70 MCP tools** across querying, searching, creating, layout, routing, assessment, batch operations, images, specializations, and more — plus **14 MCP resources** with ArchiMate reference material, workflow guides, and a viewpoint recipe library for LLMs.
+## Origen y estado actual
 
-**Example conversation:**
+El proyecto parte de [fanievh/archi-mcp-server](https://github.com/fanievh/archi-mcp-server),
+desarrollado por JS van Heerden y distribuido bajo licencia MIT.
+Conservamos su atribución, licencia e historial de desarrollo.
 
-> **You:** "What applications support the Customer Portal capability?"
+Esta actualización establece la identidad de Archi MCP Axioma. La implementación
+todavía corresponde a la línea base del complemento Eclipse PDE para Archi:
+necesita el modelo abierto en la aplicación y no incorpora aún un servicio
+headless independiente. Los identificadores técnicos y los binarios heredados
+mantienen sus nombres originales por compatibilidad.
+
+## Qué hace actualmente
+
+La línea base integra un servidor HTTP dentro de Archi. Un cliente MCP puede
+consultar el modelo abierto, buscar elementos, recorrer relaciones, componer
+vistas y crear o modificar contenido del modelo.
+
+Incluye **70 herramientas MCP** para consultas, búsquedas, creación, distribución
+visual, enrutamiento, evaluación, operaciones por lotes, imágenes y especializaciones.
+También incluye **14 recursos MCP** con referencias ArchiMate, guías de trabajo
+y recetas de puntos de vista para agentes.
+
+**Ejemplo de interacción:**
+
+> **Usuario:** "¿Qué aplicaciones dan soporte a la capacidad de atención al cliente?"
 >
-> **LLM:** Searches elements, traverses relationships, and returns: *"7 applications support Customer Portal: OrderService, PaymentGateway, ..."*
+> **Agente:** Busca los elementos y sus relaciones para identificar las aplicaciones
+> correspondientes en el modelo.
 
 ## Requirements
 
@@ -26,7 +54,7 @@ The server provides **70 MCP tools** across querying, searching, creating, layou
 
 ## Installation
 
-1. Download the latest `.archiplugin` from the [Releases](../../releases) page (or the `bin/` directory for pre-built artifacts)
+1. Para utilizar la línea base, descarga el `.archiplugin` de las [versiones del proyecto de origen](https://github.com/fanievh/archi-mcp-server/releases) o usa los artefactos heredados de `bin/`. Estos binarios conservan la identidad original; todavía no hay una distribución propia de Axioma.
 2. In Archi: **Help > Manage Plug-ins > Install New...** or copy to Archi's `dropins/` folder
 3. Restart Archi
 

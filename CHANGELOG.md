@@ -1,5 +1,13 @@
 # Changelog
 
+## Archi MCP Axioma: identidad del proyecto (22/10/2026)
+
+- Personaliza el fork público con el nombre **Archi MCP Axioma**.
+- Actualiza la presentación y los enlaces del repositorio.
+- Conserva la atribución, la licencia MIT y el historial del proyecto de origen.
+- Mantiene los identificadores técnicos y el comportamiento de la línea base.
+- No incorpora cambios funcionales ni soporte headless en esta actualización.
+
 ## v1.9.0 (2026-09-07)
 
 > Everything below is stated relative to **v1.8.0**; intermediate states that existed only during the v1.9 cycle are folded into the entry describing the shipped behaviour.
