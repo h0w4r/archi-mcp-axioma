@@ -50,6 +50,10 @@ def run():
             assert rel_type in valid, (rel_type, source, target, valid)
             relationships[rel_type] = client.call('relationship', 'create', **args, type=rel_type, name=rel_type)['result']
         assert len(client.call('relationship', 'list', modelId=mid)) == len(rel_types)
+        boolean_fields = [attr['name'] for attr in client.call('relationship', 'schema', type='AssociationRelationship')['attributes'] if attr['type'] == 'EBoolean']
+        assert boolean_fields
+        client.call('relationship', 'update', modelId=mid, id=relationships['AssociationRelationship']['id'],
+                    attributes={boolean_fields[0]: 'no-es-booleano'}, error='INVALID_ATTRIBUTE_VALUE')
         # Las relaciones también son conceptos y pueden ser extremos de otra relación.
         rel_to_rel = client.call('relationship', 'create', modelId=mid, type='AssociationRelationship',
                                 sourceId=relationships['AssignmentRelationship']['id'],
@@ -121,6 +125,7 @@ def run():
         assert image in client.call('image', 'list', modelId=mid)
         with zipfile.ZipFile(workspace / 'catalogo.archimate') as archive:
             assert any('images/' in name for name in archive.namelist()), archive.namelist()
+            assert archive.read(image) == asset.read_bytes(), 'La imagen nativa no conserva sus bytes originales'
         # Borrado transitivo: elimina representación y relaciones que dependan de un concepto.
         client.call('element', 'delete', modelId=mid, id=elements['BusinessActor']['id'])
         assert client.call('model', 'validate', modelId=mid)['errors'] == []

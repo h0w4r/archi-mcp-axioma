@@ -378,7 +378,19 @@ public final class NativeOperations {
                     throw new AxiomaException("INVALID_ATTRIBUTE", "Atributo no modificable: " + entry.getKey());
                 }
                 try {
-                    Object value = entry.getValue() == null ? null : EcoreUtil.createFromString(attr.getEAttributeType(), String.valueOf(entry.getValue()));
+                    Object input = entry.getValue();
+                    if (input != null && !(input instanceof String || input instanceof Number || input instanceof Boolean)) {
+                        throw new IllegalArgumentException("Se requiere un valor escalar.");
+                    }
+                    Class<?> nativeType = attr.getEAttributeType().getInstanceClass();
+                    if (input != null && nativeType == String.class && !(input instanceof String)) {
+                        throw new IllegalArgumentException("El atributo nativo es de texto.");
+                    }
+                    if (input != null && (nativeType == boolean.class || nativeType == Boolean.class)
+                            && !String.valueOf(input).equalsIgnoreCase("true") && !String.valueOf(input).equalsIgnoreCase("false")) {
+                        throw new IllegalArgumentException("El atributo nativo es booleano.");
+                    }
+                    Object value = input == null ? null : EcoreUtil.createFromString(attr.getEAttributeType(), String.valueOf(input));
                     object.eSet(attr, value);
                 } catch (IllegalArgumentException error) {
                     throw new AxiomaException("INVALID_ATTRIBUTE_VALUE", "Valor inválido para " + attr.getName(), error);
@@ -388,6 +400,9 @@ public final class NativeOperations {
         if (args.get("features") instanceof Map<?, ?> features) {
             IFeatures owner = require(object, IFeatures.class, "objeto");
             for (var entry : features.entrySet()) {
+                if (entry.getValue() != null && !(entry.getValue() instanceof String || entry.getValue() instanceof Number || entry.getValue() instanceof Boolean)) {
+                    throw new AxiomaException("INVALID_ARGUMENT", "Las features admiten texto, número, booleano o null, no estructuras anidadas.");
+                }
                 if (entry.getValue() == null) owner.getFeatures().remove(String.valueOf(entry.getKey()));
                 else owner.getFeatures().putString(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
             }

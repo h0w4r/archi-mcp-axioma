@@ -159,6 +159,9 @@ def test(root):
         client.call('element', 'get', modelId=b, id=actor, error='OBJECT_NOT_FOUND')
         before = (workspace / 'a.archimate').read_bytes()
         client.call('model', 'update', modelId=a, nmae='Error de escritura', error='UNKNOWN_ARGUMENT')
+        client.call('view', 'updateObject', modelId=a, id=refs['va']['id'], attributes={'font': {'dato': 'incorrecto'}}, error='INVALID_ATTRIBUTE_VALUE')
+        client.call('view', 'updateObject', modelId=a, id=refs['va']['id'], attributes={'font': 123}, error='INVALID_ATTRIBUTE_VALUE')
+        client.call('view', 'updateObject', modelId=a, id=refs['va']['id'], features={'ejemplo': {'dato': 'incorrecto'}}, error='INVALID_ARGUMENT')
         client.call('element', 'create', modelId=a, type='ImaginaryElement', name='Inválido', error='INVALID_ARCHIMATE_TYPE')
         client.call('batch', 'apply', modelId=a, operations=[
             {'domain': 'element', 'action': 'create', 'type': 'BusinessActor', 'name': 'No persistir'},
