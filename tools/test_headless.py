@@ -184,6 +184,7 @@ def test(root):
         assert (workspace / 'a.archimate').read_bytes() == external
         client.call('model', 'reload', modelId=a)
         client.call('element', 'update', modelId=a, id=actor, name='Operación actualizada')
+        saved_view = client.call('view', 'get', modelId=a, id=view_id)
         client.close()
         client = Client(root, workspace, evidence)
         reopened = client.call('model', 'open', path='a.archimate')
@@ -191,6 +192,7 @@ def test(root):
         assert client.call('element', 'get', modelId=a, id=actor)['name'] == 'Operación actualizada'
         assert len(client.call('relationship', 'list', modelId=a)) == 1
         assert len(client.call('view', 'list', modelId=a)) == 1
+        assert client.call('view', 'get', modelId=a, id=view_id) == saved_view, 'Las posiciones, rutas y referencias no sobreviven al reinicio'
         client.call('model', 'open', path='b.archimate')
         assert client.call('element', 'list', modelId=b) == []
         client.close()

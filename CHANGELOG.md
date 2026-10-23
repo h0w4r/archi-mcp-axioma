@@ -1,5 +1,19 @@
 # Changelog
 
+## Adaptador Live opcional (22/10/2026)
+
+- Añade sincronización sobre los modelos y editores que ya están abiertos,
+  mediante EMF Compare, sin arrancar la GUI desde el servidor MCP.
+- Protege las ediciones humanas con estado de conflicto por modelo y reintento
+  explícito; otros modelos limpios pueden seguir actualizándose.
+- Conserva las instancias del modelo, la vista y el editor; reconstruye figuras
+  GEF con las referencias completas para adiciones, movimientos y eliminaciones.
+- Agrupa escrituras rápidas y lee versiones coherentes fuera del hilo gráfico.
+- Añade aceptación real con menú SWT/JFace, dos modelos, archivos inválidos,
+  eliminación de una vista y continuidad del proceso MCP después de cerrar Archi.
+- Distribuye el complemento como `.archiplugin` independiente y desactivado por
+  defecto; el núcleo headless sigue funcionando sin instalarlo.
+
 ## Axioma headless 0.1.0 en desarrollo (22/10/2026)
 
 - Añade una aplicación Equinox independiente con MCP/stdio, sin workbench ni

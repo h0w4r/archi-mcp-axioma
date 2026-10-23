@@ -54,7 +54,8 @@ para obtener un `modelId` explícito.
   `image.add` con `id` de un destino o mediante un lote con `view.addImage`.
 - Las exportaciones SVG y PNG son transparentes. Usan SWT y fuentes sin abrir
   ventanas ni workbench. Linux sin servidor gráfico no está acreditado.
-- No hay actualización automática de diagramas ya abiertos en Archi.
+- La actualización automática de diagramas abiertos se habilita con el adaptador
+  Live opcional, distribuido por separado. El servidor no depende de él.
 
 El código, las instrucciones completas y los límites operativos están en el
 [repositorio público](https://github.com/h0w4r/archi-mcp-axioma).

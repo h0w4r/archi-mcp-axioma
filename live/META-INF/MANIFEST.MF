@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Archi MCP Axioma Live
+Bundle-SymbolicName: io.github.h0w4r.axioma.live;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Archi MCP Axioma
+Bundle-Activator: io.github.h0w4r.axioma.live.LivePlugin
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.equinox.app,
+ org.eclipse.ui,
+ com.archimatetool.editor,
+ com.archimatetool.model,
+ org.eclipse.emf.compare,
+ org.eclipse.emf.ecore.change,
+ com.google.guava
+Bundle-ClassPath: .

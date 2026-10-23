@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <!-- Adaptador opcional: no participa en el arranque del servidor headless. -->
+  <extension point="org.eclipse.ui.startup">
+    <startup class="io.github.h0w4r.axioma.live.LiveStartup"/>
+  </extension>
+  <extension point="org.eclipse.ui.actionSets">
+    <actionSet id="io.github.h0w4r.axioma.live.actions" label="Archi MCP Axioma" visible="true">
+      <menu id="io.github.h0w4r.axioma.live.menu" label="Axioma" path="additions">
+        <separator name="sincronizacion"/>
+      </menu>
+      <action id="io.github.h0w4r.axioma.live.toggle" label="Actualizar modelos abiertos en vivo" style="toggle"
+          menubarPath="io.github.h0w4r.axioma.live.menu/sincronizacion" class="io.github.h0w4r.axioma.live.LiveAction"/>
+      <action id="io.github.h0w4r.axioma.live.resume" label="Reintentar tras resolver conflictos"
+          menubarPath="io.github.h0w4r.axioma.live.menu/sincronizacion" class="io.github.h0w4r.axioma.live.LiveAction"/>
+    </actionSet>
+  </extension>
+  <extension point="org.eclipse.core.runtime.applications" id="verify">
+    <application cardinality="singleton-global" thread="main" visible="false">
+      <run class="io.github.h0w4r.axioma.live.verification.LiveVerificationApplication"/>
+    </application>
+  </extension>
+</plugin>

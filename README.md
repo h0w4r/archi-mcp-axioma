@@ -44,6 +44,8 @@ no son el contrato del servidor headless nuevo.
 - Distribuir y enrutar vistas mediante el motor ELK de la línea base.
 - Exportar SVG y PNG con fondo transparente y conservar imágenes al guardar,
   recuperar versiones, cerrar y volver a abrir archivos nativos.
+- Actualizar modelos y vistas ya abiertos mediante el [adaptador Live opcional](live/README.md),
+  con protección de ediciones humanas y sin convertir la GUI en una dependencia del MCP.
 
 No se necesita jArchi para estas operaciones: se utilizan directamente las APIs
 oficiales de Archi. No se modifica la instalación del operador.
@@ -186,9 +188,9 @@ Ejemplo de argumentos para un lote, usando el `modelId` real devuelto al crear:
   no está acreditado. El núcleo no inicia `Display` para editar o guardar.
 - No están implementadas en el servidor nuevo las 70 herramientas HTTP ni los
   recursos del complemento anterior con sus mismos nombres.
-- La actualización automática de una vista ya abierta en Archi está pendiente
-  de un adaptador y de su prueba real. No se sobrescriben cambios humanos para
-  simular esa capacidad.
+- La actualización de vistas abiertas requiere instalar y habilitar por separado
+  el [adaptador Live](live/README.md). Se pausa ante cambios locales sin guardar;
+  no realiza fusiones automáticas de ediciones humanas simultáneas.
 
 ## Ejecutar la aceptación
 
@@ -210,6 +212,20 @@ Los resultados y transcripciones se conservan localmente en `.axioma-local/`.
 Las pruebas observan salida, CPU y E/S del árbol administrado; no cancelan una
 operación viva por su duración total.
 
+Para acreditar también la visualización en vivo, compilar y preparar el adaptador
+en el runtime aislado y ejecutar el circuito con el workbench real:
+
+```powershell
+./tools/build-live.ps1
+./tools/prepare-live.ps1
+python ./tools/test_live.py
+```
+
+Esta prueba utiliza los menús y editores nativos, dos modelos abiertos, cambios
+estructurales y rápidos consecutivos, conflictos humanos, archivos inválidos,
+reintento y continuidad del servidor después de cerrar la GUI. El paquete opcional
+se genera con `./tools/package-live.ps1`.
+
 Para generar una distribución compilada:
 
 ```powershell
@@ -224,6 +240,7 @@ Para generar una distribución compilada:
 - `headless/src/.../protocol`: aplicación Equinox, catálogo y transporte MCP.
 - `headless/src/net/.../AxiomaLayoutBridge.java`: puente al motor ELK reutilizado.
 - `net.vheerden.archi.mcp`: línea base original y dependencias versionadas.
+- `live`: adaptador gráfico opcional, comparación/fusión y aceptación con Archi real.
 
 Partimos de [fanievh/archi-mcp-server](https://github.com/fanievh/archi-mcp-server),
 de JS van Heerden. Conservamos licencia, atribución e historial y reutilizamos
