@@ -1,5 +1,20 @@
 # Changelog
 
+## Axioma headless 0.1.0 en desarrollo (22/10/2026)
+
+- Añade una aplicación Equinox independiente con MCP/stdio, sin workbench ni
+  aprobación gráfica, y un contrato nuevo de nueve herramientas por dominio.
+- Implementa registro multimodelo, transacciones sobre copias aisladas,
+  persistencia nativa atómica, previsualización y conflictos de revisión y archivo.
+- Incorpora historial local verificable y recuperación de versiones.
+- Expone el catálogo nativo, operaciones de conceptos, relaciones, vistas,
+  carpetas, imágenes y especializaciones, con validación de entrada transversal.
+- Reutiliza ELK y añade exportación nativa SVG y PNG con alpha real.
+- Añade compilación, runtime aislado, empaquetado y aceptación real por stdio,
+  incluido reinicio, catálogo de 61 elementos y 11 relaciones y dos procesos.
+- Conserva por separado el complemento gráfico y documenta sus diferencias.
+- La sincronización automática con una vista abierta no está implementada.
+
 ## Archi MCP Axioma: identidad del proyecto (22/10/2026)
 
 - Personaliza el fork público con el nombre **Archi MCP Axioma**.

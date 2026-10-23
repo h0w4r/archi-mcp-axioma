@@ -13,3 +13,9 @@ package-lock.json
 
 # Generated PDF report output (prompts/archimate-model-to-pdf-report.py)
 archi-report/
+
+# Estado operativo y evidencia local; no forman parte de la distribución pública.
+.axioma-local/
+.axioma/
+dist/
+*.axioma.lock

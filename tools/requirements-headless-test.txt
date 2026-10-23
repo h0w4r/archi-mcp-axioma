@@ -1,0 +1,2 @@
+# Sólo aceptación operativa: actividad real de CPU y E/S del árbol propio.
+psutil>=5.9,<8

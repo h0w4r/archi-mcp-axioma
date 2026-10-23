@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <!-- Aplicación Equinox sin workbench, ventanas ni aprobación en SWT. -->
+  <extension point="org.eclipse.core.runtime.applications" id="server">
+    <application cardinality="singleton-global" thread="main" visible="false">
+      <run class="io.github.h0w4r.axioma.headless.protocol.HeadlessApplication"/>
+    </application>
+  </extension>
+</plugin>
