@@ -1,8 +1,11 @@
 # Technical Documentation
 
+> **Legacy GUI/HTTP component.** For the current Axioma headless server and optional
+> Live companion, start with the [Axioma documentation hub](README.md).
+
 Comprehensive technical documentation for the ArchiMate MCP Server plugin. These documents cover internal architecture, algorithms, and extension patterns for developers who want to understand, modify, or extend the plugin.
 
-For installation, configuration, and the complete tool catalog, see the [README](../README.md).
+For installation, configuration, and the complete legacy tool catalog, see the [legacy README](../README-LEGADO.md).
 
 ## Documents
 

@@ -1,5 +1,8 @@
 # Architecture Overview
 
+> **Legacy GUI/HTTP architecture.** The current server has a separate
+> [headless architecture guide](headless-architecture.md).
+
 This document describes the internal architecture of the ArchiMate MCP Server plugin, including the layered package structure, threading model, and key design decisions.
 
 ## Table of Contents

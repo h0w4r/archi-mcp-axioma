@@ -1,24 +1,25 @@
-# Archi MCP Axioma: paquete headless
+# Archi MCP Axioma: headless package
 
-Este paquete contiene el servidor compilado 0.1.0, no una instalación de Archi.
-Está acreditado en Windows con Archi 5.10.0 y Java 21. Necesita PowerShell 7.
-No requiere instalar jArchi ni mantener abierto el workbench de Archi.
+This package contains the compiled 0.1.0 server, not a complete Archi installation.
+The verified environment is Windows with Archi 5.10.0, Java 21, and PowerShell 7.
+It does not require jArchi or an open Archi workbench. An existing jArchi
+installation is not used as an MCP bridge.
 
-## Preparación
+## Prepare the runtime
 
-Extraer el ZIP a un directorio permanente. Desde ese directorio:
+Extract the ZIP to a permanent directory. From that directory, run:
 
 ```powershell
 ./tools/prepare-headless.ps1 -ArchiHome 'C:/Program Files/Archi' -BundlePath './bundle'
 ```
 
-Se crea una copia aislada en `build/runtime/Archi`. No se modifica la instalación
-indicada por `ArchiHome`. No mover `bundle` después de preparar el runtime sin
-repetir la preparación, porque Equinox registra su ruta absoluta.
+This creates an isolated Archi copy under `build/runtime/Archi`; the source
+installation is not modified. Keep `bundle` in place after preparation because
+Equinox records its absolute location. If it moves, rerun preparation.
 
-## Configuración MCP
+## Connect an MCP client
 
-Sustituir las rutas del ejemplo:
+Adapt the example paths and surrounding configuration format to your client:
 
 ```json
 {
@@ -26,39 +27,43 @@ Sustituir las rutas del ejemplo:
     "archi-mcp-axioma": {
       "command": "pwsh",
       "args": [
-        "-NoProfile", "-File", "C:/ruta/axioma/tools/start-headless.ps1",
-        "-Workspace", "C:/modelos-arquitectura"
+        "-NoProfile", "-File", "C:/path/to/axioma/tools/start-headless.ps1",
+        "-Workspace", "C:/models/architecture"
       ]
     }
   }
 }
 ```
 
-El transporte es stdio. El proceso termina al cerrar stdin. Los errores y el
-progreso van a stderr, no a stdout. Consultar `axioma_runtime` con `action=info`
-para comprobar el modo y `axioma_model` con `action=create` o `action=open`
-para obtener un `modelId` explícito.
+The transport is stdio. The process ends when stdin closes. Errors and progress
+go to stderr, not stdout. Call `axioma_runtime` with `action: "info"` to check
+the runtime, then `axioma_model` with `action: "create"` or `"open"` to obtain
+an explicit `modelId`.
 
-## Comportamiento
+## Behavior at a glance
 
-- Las mutaciones satisfactorias se guardan automáticamente y devuelven
-  `persisted=true`, revisión y huella SHA-256.
-- `dryRun=true` previsualiza transacciones sin escribir. No se admite en
-  creación, apertura, cierre, recarga ni exportación.
-- `expectedRevision` y `expectedFingerprint` detectan estados desactualizados.
-  La revisión es de sesión; para comparar entre reinicios, usar la huella.
-- El historial está en `.axioma/history` dentro del workspace. `model.history`
-  lista versiones y `model.restore` permite recuperarlas. Es un respaldo local,
-  no una copia externa del equipo.
-- Las imágenes se importan y asignan en la misma transacción, por ejemplo
-  `image.add` con `id` de un destino o mediante un lote con `view.addImage`.
-- Las exportaciones SVG y PNG son transparentes. Usan SWT y fuentes sin abrir
-  ventanas ni workbench. Linux sin servidor gráfico no está acreditado.
-- La actualización automática de diagramas abiertos se habilita con el adaptador
-  Live opcional, distribuido por separado. El servidor no depende de él.
+- Successful edits are saved automatically and return `persisted: true`, a
+  revision, and a file SHA-256 fingerprint.
+- `dryRun: true` previews a transaction without writing. It is unsupported for
+  model creation, opening, closing, reloading, and view export.
+- `expectedRevision` and `expectedFingerprint` detect stale state. Revisions
+  belong to the open session; fingerprints can be compared across restarts.
+- Local history lives under `.axioma/history` in the workspace. Use `model.history`
+  to list versions and `model.restore` to recover one. It is not an off-machine
+  backup.
+- Images must be imported and referenced in the same transaction, using
+  `image.add` with a destination `id`, or a batch including `view.addImage`.
+- SVG and PNG exports are transparent. They use SWT and fonts without opening
+  a workbench. Linux without a graphics server has not been verified.
+- Refreshing already-open views requires the separately distributed, optional
+  Live companion. The server does not depend on it.
 
-El código, las instrucciones completas y los límites operativos están en el
-[repositorio público](https://github.com/h0w4r/archi-mcp-axioma).
-Las dependencias conservan sus licencias y avisos, descritos en
-[DEPENDENCIAS.md](headless/DEPENDENCIAS.md), y la licencia del repositorio se
-incluye como [LICENSE](LICENSE).
+## Documentation and licenses
+
+Full setup, tools, architecture, development, and operational limits are in the
+[online documentation](https://github.com/h0w4r/archi-mcp-axioma/blob/main/docs/README.md).
+The repository retains its [MIT license](https://github.com/h0w4r/archi-mcp-axioma/blob/main/LICENSE).
+
+In the compiled ZIP, dependency details are at `headless/DEPENDENCIAS.md` and the
+license is at `LICENSE`. In the source checkout, see
+[dependency details](DEPENDENCIAS.md) and [the license](../LICENSE).

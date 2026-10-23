@@ -1,101 +1,109 @@
-# Actualización en vivo en Archi
+# Axioma Live
 
-Este complemento es **opcional**. El servidor MCP headless no depende de él,
-no inicia el workbench y sigue editando y exportando después de cerrar Archi.
-El complemento sólo se utiliza cuando se desea visualizar en Archi los cambios
-que el servidor ya ha guardado en los archivos nativos.
+[Project home](../README.md) / [Documentation](../docs/README.md) / Live updates
 
-## Funcionamiento
+**Optional live viewing for models already open in Archi.** The headless MCP
+server does not depend on this plug-in, does not start a workbench, and keeps
+editing and exporting after Archi closes.
 
-1. Abrir en Archi el mismo archivo que se utiliza mediante el MCP.
-2. Activar **Axioma > Actualizar modelos abiertos en vivo**.
-3. Modificar y guardar el modelo mediante el MCP. Las transacciones satisfactorias
-   ya se guardan automáticamente; no se necesita una aprobación gráfica.
-4. El complemento detecta el archivo cambiado, carga y valida una copia aislada
-   y calcula sus diferencias mediante EMF Compare.
-5. Si no hay cambios locales pendientes, aplica las diferencias al modelo que ya
-   está abierto y reconstruye sus figuras en el mismo editor. No cierra y reabre
-   la pestaña para actualizar nombres, contenido, posiciones, grupos o conexiones.
+## Install and enable
 
-La detección utiliza una huella SHA-256 y un intervalo de observación de 750 ms.
-Las escrituras rápidas se agrupan hasta observar dos huellas consecutivas iguales;
-si un escritor cambia el archivo durante su lectura, se vuelve a intentar sin
-aplicar una versión incompleta ni detener definitivamente la observación.
-La lectura y la comparación se ejecutan fuera del hilo gráfico. No se copia
-el modelo completo en cada observación: sólo cuando el archivo cambia.
+1. Obtain a compiled Axioma Live `.archiplugin`, or build one using the commands
+   below. This is a different artifact from the headless server ZIP.
+2. In Archi, use **Help > Manage Plug-ins > Install New...** to select it, then
+   restart Archi.
+3. Open the same native model file that the MCP server uses.
+4. Enable **Axioma > Actualizar modelos abiertos en vivo** (update open models
+   live). The current plug-in's menu labels are Spanish.
+5. Edit through MCP. Successful transactions are already saved automatically;
+   there is no graphical approval step.
 
-Los modelos abiertos se observan independientemente. Un conflicto en un modelo
-no impide actualizar otro modelo limpio. El complemento no escribe el archivo
-del modelo ni guarda por su cuenta los cambios del operador.
+Live is **disabled by default** in a new installation. jArchi is neither
+required nor a substitute for this plug-in. If you already use jArchi, its
+scripting workflow remains separate; specific third-party plug-in combinations
+are not covered by the current acceptance claim.
 
-## Protección de las ediciones humanas
+## What updates
 
-Si el modelo o alguno de sus editores tiene cambios sin guardar y el archivo
-externo cambia, el estado pasa a `CONFLICT_UNSAVED`. No se aplica la actualización
-externa ni se descartan las modificaciones locales.
+The companion loads and validates changed files in isolation, compares them
+with EMF Compare, and applies differences to clean models already open in Archi.
+Names, content, positions, groups, and connections refresh in the existing tab.
 
-Resolver primero qué cambios se quieren conservar, por ejemplo mediante una
-copia separada o deshaciendo la edición local. Después usar **Axioma > Reintentar
-tras resolver conflictos**. El complemento vuelve a comprobar el estado antes
-de aplicar cualquier diferencia; el reintento no autoriza descartar cambios.
+- Model, view, editor, and graphical control instances remain in use.
+- Zoom is preserved. Viewport and selection are restored when the new canvas
+  bounds allow it and the selected objects still exist.
+- Native GEF figures are rebuilt after references are consistent, rather than
+  exposing partial structural changes to the editor's adapters.
+- If an incoming change explicitly deletes an open view, that view's tab closes.
+  Other views and models stay open.
+- A clean external update clears undo history belonging to the previous state.
+  It does not do this while human edits remain unsaved.
 
-No hay una fusión automática de ediciones simultáneas ni un bloqueo del botón
-Guardar de Archi. Si se guarda desde la GUI, el servidor detectará que su archivo
-ha cambiado externamente y exigirá recargarlo antes de guardar una sesión antigua.
+## How observation works
 
-## Conservación del contexto
+A SHA-256 fingerprint is checked at a 750 ms observation interval. Rapid saves
+are coalesced until two consecutive observations agree. If a writer changes a
+file during reading, Live retries rather than applying an incomplete version.
 
-- Mantiene las instancias del modelo, la vista, el editor y su control gráfico.
-- Conserva el zoom y recupera la posición del viewport y la selección existente
-  cuando los nuevos límites del canvas lo permiten y los objetos seleccionados siguen presentes.
-- Recrea las figuras GEF con las referencias completas, sin exponer los estados
-  intermedios de una fusión a los adaptadores gráficos.
-- Si el cambio elimina expresamente una vista abierta, cierra esa pestaña antes
-  de eliminar sus referencias. Las demás vistas y modelos permanecen abiertos.
-- Cuando aplica una versión externa, invalida el historial de deshacer del estado
-  anterior, que ya no corresponde al archivo actual. No lo hace mientras haya
-  ediciones humanas sin guardar.
+Reading and comparison run outside the UI thread. A full GUI model snapshot is
+only taken when a changed file needs comparison, not at every idle observation.
+Each model is tracked independently. The companion **never writes model files**
+or saves the operator's edits on their behalf.
 
-## Errores
+## Unsaved human changes
 
-Los archivos ilegibles, los modelos inválidos o un cambio de identidad del modelo
-producen `ERROR_PAUSED`. La versión que se estaba visualizando se conserva.
-La barra de estado y el registro de errores de Eclipse contienen el motivo.
-Tras corregir el archivo, el operador puede pedir el reintento desde el menú.
+If an external save arrives while a model or one of its editors is dirty, Live
+pauses that model with `CONFLICT_UNSAVED`. It does not discard local edits or
+apply the external change over them. Other clean models can still update.
 
-Los cambios de datos se registran con `ChangeRecorder` para poder revertir una
-fusión que no reproduzca exactamente el modelo entrante. La comparación y el
-guardado del servidor son procesos independientes: un fallo gráfico no invalida
-ni simula una escritura MCP.
+Resolve which changes to keep first, for example by preserving a separate copy
+or undoing the local edit. Then select **Axioma > Reintentar tras resolver
+conflictos** (retry after resolving conflicts). Retry checks the model again;
+it is not permission to discard edits.
 
-## Compilación y aceptación
+There is no automatic merge of simultaneous human edits, and Live does not lock
+Archi's Save button. If you save from the GUI, the MCP server detects the
+external file change and requires reloading before committing a stale session.
+See [model safety](../docs/headless-operations.md).
 
-Se utilizan las bibliotecas que ya incluye Archi 5.10, incluidas EMF Compare y
-EMF Change. No requiere instalar jArchi, descargar un servicio ni contratar una API.
-Ejecutar las instrucciones de desarrollo desde la raíz del repositorio fuente:
+## Errors and recovery
+
+A stably unreadable file, invalid native model, or changed model identity causes
+`ERROR_PAUSED`. The currently displayed version is retained. Archi's status bar
+and Eclipse error log provide the reason. Correct the file, then request retry
+from the Axioma menu.
+
+EMF `ChangeRecorder` records applied data changes so a merge that does not
+reproduce the incoming model can roll back. A GUI refresh error does not fake
+or invalidate a successful server-side file commit.
+
+## Build, test, and package
+
+From the source checkout, prepare the headless runtime first, then run:
 
 ```powershell
 ./tools/build-live.ps1
 ./tools/prepare-live.ps1
 python ./tools/test_live.py
-```
-
-`prepare-live.ps1` sólo modifica un runtime aislado preparado por Axioma, nunca
-la instalación de Archi del operador. La aceptación utiliza un workbench real,
-editores nativos y el menú SWT/JFace real, con un perfil temporal independiente.
-
-La prueba cubre actualización de figuras, adiciones, movimientos, grupos,
-relaciones, eliminaciones, protección de ediciones humanas, dos modelos abiertos,
-archivos inválidos, reintento, cierre de una vista eliminada y continuidad del
-servidor headless después de cerrar la GUI.
-
-```powershell
 ./tools/package-live.ps1
 ```
 
-El archivo `.archiplugin` resultante se instala mediante **Help > Manage Plug-ins
-> Install New...** y después se reinicia Archi. La actualización está desactivada
-en una instalación nueva y se habilita desde el menú Axioma.
+The build uses libraries already included with Archi 5.10, including EMF Compare
+and EMF Change. `prepare-live.ps1` only changes an Axioma-marked isolated runtime,
+not the operator's Archi installation.
 
-La compatibilidad acreditada se limita a Windows y Archi 5.10. No se afirma que
-la sincronización esté probada con versiones o extensiones de terceros no ensayadas.
+Acceptance uses a real workbench, native editors, and actual SWT/JFace menu
+actions in an isolated profile. It covers structural changes, rapid saves,
+zoom/selection, two models, human conflicts, invalid files, retry, deleted
+views, and headless editing after the GUI closes. See the
+[development guide](../docs/headless-development.md) for test and artifact details.
+
+## Compatibility
+
+Operational acceptance covers **Windows with Archi 5.10.0 and Java 21**.
+Other versions, platforms, and arbitrary third-party extension combinations
+have not been verified. Installing this companion is not required to use the
+headless MCP server.
+
+[Getting started](../docs/headless-getting-started.md) ·
+[Architecture](../docs/headless-architecture.md) · [Documentation](../docs/README.md)

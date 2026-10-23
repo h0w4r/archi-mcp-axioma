@@ -1,94 +1,94 @@
+![Archi MCP Axioma: connected architecture layers surrounding a geometric A mark.](docs/assets/axioma-banner.png)
+
 # Archi MCP Axioma
 
-**Automatización ArchiMate por MCP, sin abrir el workbench de Archi.**
+**Model your architecture. Automate the work. Keep the workbench optional.**
 
-Servidor open source basado en el metamodelo y el formato de archivo oficiales
-de [Archi](https://www.archimatetool.com/). Cada modelo se identifica explícitamente;
-las mutaciones se validan y guardan antes de devolver `persisted: true`.
-No utiliza una selección activa del editor ni una aprobación gráfica inicial.
+An open-source [Model Context Protocol](https://modelcontextprotocol.io/) server
+for creating, editing, validating, and exporting native
+[Archi](https://www.archimatetool.com/) models without opening the workbench.
+Use explicit model IDs, commit validated transactions, and optionally watch
+the results update inside Archi.
 
-[Repositorio](https://github.com/h0w4r/archi-mcp-axioma) ·
-[Incidencias](https://github.com/h0w4r/archi-mcp-axioma/issues) ·
-[Licencia MIT](LICENSE)
+**Early development: 0.1.0** · **MIT license** · **MCP over stdio**
 
-## Estado
+[Quick start](#quick-start) · [Capabilities](#what-you-can-do) ·
+[Live updates](#see-changes-live-in-archi) · [Documentation](docs/README.md) ·
+[Issues](https://github.com/h0w4r/archi-mcp-axioma/issues)
 
-El servidor independiente está en **versión inicial de desarrollo 0.1.0**.
-Su aceptación se ejecuta contra procesos Equinox reales por MCP/stdio, no contra
-un sustituto del modelo. El entorno acreditado es Windows, Archi 5.10.0 y Java 21.
-Todavía no se acredita compatibilidad operativa con otras versiones o plataformas.
+> **Verified environment:** Windows, Archi 5.10.0, and Java 21. The headless
+> server and optional Live companion have been exercised through real MCP
+> processes, native files, and actual Archi editors. Other environments are
+> not yet operationally verified.
 
-El complemento gráfico original se conserva por separado. Su documentación está
-en [README-LEGADO.md](README-LEGADO.md); sus herramientas y configuración HTTP
-no son el contrato del servidor headless nuevo.
+## Why Axioma?
 
-## Capacidades verificadas
+- **No workbench dependency.** Create, edit, and save without opening Archi or
+  approving a change in its GUI.
+- **More than one model.** Each request targets an explicit `modelId`, not
+  whichever model happens to be selected in an editor.
+- **Native files, not a parallel format.** Read and write Archi models through
+  Archi's own model and archive APIs.
+- **Changes you can account for.** Atomic batches, validation, local history,
+  optimistic concurrency checks, and correlated errors.
+- **A GUI when you want one.** The optional Live companion refreshes already-open
+  views without making the MCP server depend on them.
 
-- Crear, abrir, consultar y cerrar varios modelos sin un modelo activo global.
-- Guardado automático por transacción y guardado explícito, mediante el gestor
-  nativo de Archi, con reemplazo atómico en el mismo sistema de archivos.
-- Consultar y utilizar los **61 tipos concretos de elementos y 11 tipos de
-  relaciones** expuestos por el metamodelo de Archi 5.10.
-- Consultar relaciones permitidas por Archi para un par de conceptos. Un extremo
-  puede ser otra relación cuando las reglas de Archi lo permiten.
-- Crear vistas, instancias de elementos y relaciones, grupos, notas, líneas,
-  referencias a otras vistas e imágenes.
-- Editar propiedades, documentación, atributos escalares y features nativas,
-  organizar carpetas y asignar especializaciones.
-- Ejecutar lotes atómicos con alias `$alias.id`, previsualización `dryRun` y
-  controles `expectedRevision` y `expectedFingerprint`.
-- Detectar conflictos de archivo entre procesos y mantener el estado previo
-  cuando una operación o un lote falla antes del guardado.
-- Conservar versiones anteriores y recuperarlas mediante `model.history` y
-  `model.restore`, sin sobrescribir silenciosamente una modificación externa.
-- Distribuir y enrutar vistas mediante el motor ELK de la línea base.
-- Exportar SVG y PNG con fondo transparente y conservar imágenes al guardar,
-  recuperar versiones, cerrar y volver a abrir archivos nativos.
-- Actualizar modelos y vistas ya abiertos mediante el [adaptador Live opcional](live/README.md),
-  con protección de ediciones humanas y sin convertir la GUI en una dependencia del MCP.
+## What you can do
 
-No se necesita jArchi para estas operaciones: se utilizan directamente las APIs
-oficiales de Archi. No se modifica la instalación del operador.
-
-## Requisitos
-
-| Componente | Uso |
+| Capability | Included |
 | --- | --- |
-| Distribución de Archi 5.10.0 | Motor, metamodelo, formato nativo y exportador SVG |
-| JDK 21 y `JAVA_HOME` | Compilación desde fuentes |
-| PowerShell 7 | Preparación y lanzamiento en Windows |
-| Cliente MCP con transporte stdio | Uso del servidor |
-| Python 3 y psutil | Sólo aceptación automatizada |
+| Model lifecycle | Create, open, inspect, validate, save, reload, and close multiple models |
+| ArchiMate concepts | All 61 concrete element types and 11 relationship types exposed by the tested metamodel |
+| Views and presentation | Elements, connections, groups, notes, lines, view references, images, and native visual attributes |
+| Model organization | Folders, properties, documentation, and specializations |
+| Transactional editing | Atomic batches, aliases, `dryRun`, revision checks, and file fingerprints |
+| Recovery | Local content-addressed history and restoration with embedded images preserved |
+| Layout and export | ELK layout/routing and transparent SVG/PNG export |
+| Optional live viewing | Refresh clean models already open in Archi; pause when unsaved human edits conflict |
 
-Las bibliotecas necesarias se reutilizan de la línea base y de la distribución
-de Archi. No hay una suscripción ni una API de pago necesaria para ejecutar este
-servidor. El modelo de IA y las políticas independientes del cliente MCP quedan
-fuera del servidor.
+Native relationship rules still apply. Axioma does not bypass the metamodel
+to manufacture invalid diagrams. See the [tool reference](docs/headless-tools.md)
+and [operational limits](docs/headless-operations.md#current-limits).
 
-## Compilar y preparar
+## Choose your workflow
 
-Desde la raíz del repositorio, con un JDK 21 configurado:
+| Component | Purpose | Open Archi required? |
+| --- | --- | --- |
+| **Axioma headless server** | Your MCP client models and exports through stdio | **No** |
+| **Axioma Live** | Optional companion for seeing saved changes in open editors | Yes, only for viewing |
+| **jArchi** | Your existing scripting workflows, if installed | Not an Axioma dependency |
+| **Legacy GUI/HTTP server** | Original upstream implementation, retained separately | See [legacy documentation](README-LEGADO.md) |
+
+Already have **jArchi** installed? You can keep it for your scripts. Axioma
+calls Archi's native APIs directly; it does not need jArchi to be installed,
+running, or used as a bridge. jArchi is not the Live companion.
+
+## Quick start
+
+### 1. Build and prepare
+
+Install Archi 5.10.0, PowerShell 7, and a JDK 21. Point `JAVA_HOME` at the JDK,
+then run these commands in **PowerShell 7**:
 
 ```powershell
+git clone https://github.com/h0w4r/archi-mcp-axioma.git
+Set-Location archi-mcp-axioma
 ./tools/build-headless.ps1 -ArchiHome 'C:/Program Files/Archi'
 ./tools/prepare-headless.ps1 -ArchiHome 'C:/Program Files/Archi'
 ```
 
-La compilación crea el bundle bajo `build/headless/` y una referencia local
-`build/headless-latest.json`. La preparación copia la distribución a
-`build/runtime/Archi`, incorpora sólo el nuevo bundle y no instala nada en
-`C:/Program Files/Archi`.
+Preparation creates an **isolated runtime** under `build/runtime/Archi`.
+It does not install Axioma into your existing Archi installation. Keep this
+checkout and its generated bundle at stable paths after preparation.
 
-Para utilizar un paquete ya compilado, extraerlo y preparar con el directorio
-del bundle como argumento:
+Have a compiled ZIP instead? Follow the
+[compiled-package instructions](headless/PAQUETE.md).
 
-```powershell
-./tools/prepare-headless.ps1 -ArchiHome 'C:/Program Files/Archi' -BundlePath './bundle'
-```
+### 2. Connect your MCP client
 
-## Configurar un cliente MCP
-
-Ejemplo de configuración genérica. Sustituir las rutas por las del equipo:
+Adapt the paths below to your checkout and model workspace. Your client starts
+the process; there is no HTTP endpoint or server window to open.
 
 ```json
 {
@@ -97,151 +97,83 @@ Ejemplo de configuración genérica. Sustituir las rutas por las del equipo:
       "command": "pwsh",
       "args": [
         "-NoProfile", "-File",
-        "C:/ruta/archi-mcp-axioma/tools/start-headless.ps1",
-        "-Workspace", "C:/modelos-arquitectura"
+        "C:/projects/archi-mcp-axioma/tools/start-headless.ps1",
+        "-Workspace", "C:/models/architecture"
       ]
     }
   }
 }
 ```
 
-El cliente inicia el proceso. `stdout` contiene exclusivamente MCP; el
-diagnóstico se escribe en `stderr`. Al cerrar stdin, el servidor termina.
-Cada proceso utiliza un perfil Equinox aislado. Dos procesos pueden abrir
-el mismo archivo, pero un estado desactualizado no puede guardarse sin recargarlo.
+This is a generic configuration example. Adapt its surrounding structure to
+your client's configuration format. Models, imported images, and exports must
+remain within the selected workspace.
 
-El `Workspace` delimita las rutas accesibles. Los modelos, imágenes de entrada
-y exportaciones deben permanecer dentro de esa raíz, incluidos los destinos
-resueltos a través de enlaces. El historial y los perfiles están en `.axioma/`.
+### 3. Try your first model
 
-## Herramientas del servidor
+Ask your MCP client:
 
-Las nueve herramientas agrupan acciones. Sus esquemas anuncian los parámetros
-y requisitos de cada acción; los parámetros desconocidos se rechazan.
+> Check the Axioma runtime. Create a model named "Architecture Sandbox" at
+> "sandbox.archimate". Add a business actor and a business process, connect them
+> using a valid relationship, and place them in a view. Validate the model and
+> export the view as a transparent SVG. Use the returned model and object IDs.
 
-| Herramienta | Acciones principales |
+Successful mutations are saved automatically. Look for `persisted: true`,
+`revision`, and `fingerprint` in the response. The
+[getting-started guide](docs/headless-getting-started.md) explains verification,
+paths, and the first calls in detail.
+
+## See changes live in Archi
+
+Install the optional **Axioma Live** `.archiplugin`, open the same native model
+file in Archi, and enable live updates from the **Axioma** menu.
+
+- Saved changes update the existing model, view, and editor instances.
+- Zoom is retained; selection and viewport are restored where the new content
+  allows it.
+- Unsaved human changes pause synchronization for that model. Other clean
+  models can continue updating.
+- Closing Archi does not stop the headless server.
+
+Live is **off by default** and does not automatically merge simultaneous human
+edits. Read the [Live installation and conflict guide](live/README.md) before
+enabling it.
+
+## Documentation
+
+| I want to... | Read |
 | --- | --- |
-| `axioma_runtime` | `info` |
-| `axioma_model` | `create`, `open`, `list`, `info`, `update`, `save`, `reload`, `close`, `validate`, `history`, `restore` |
-| `axioma_element` | `types`, `schema`, `create`, `get`, `list`, `update`, `delete` |
-| `axioma_relationship` | Las anteriores, `validTypes` y `reconnect` |
-| `axioma_view` | Vistas, objetos visuales, líneas, notas, grupos, imágenes, referencias, posiciones, bendpoints, `layout`, `export` |
-| `axioma_folder` | `create`, `get`, `list`, `update`, `move`, `delete` |
-| `axioma_profile` | `create`, `get`, `list`, `update`, `assign`, `delete` |
-| `axioma_image` | `add`, `list`, `assign` |
-| `axioma_batch` | `apply` |
+| Find the right guide | [Documentation hub](docs/README.md) |
+| Install, configure, and verify the server | [Getting started](docs/headless-getting-started.md) |
+| Learn the nine tools and use atomic batches | [Tool reference](docs/headless-tools.md) |
+| Understand saving, conflicts, history, and limits | [Operations and model safety](docs/headless-operations.md) |
+| Install or troubleshoot live viewing | [Axioma Live](live/README.md) |
+| Understand the implementation boundaries | [Headless architecture](docs/headless-architecture.md) |
+| Build, test, and package from source | [Development guide](docs/headless-development.md) |
+| Review dependencies and attribution | [Dependencies](headless/DEPENDENCIAS.md) · [License](LICENSE) |
 
-Las respuestas satisfactorias contienen `correlationId` y `data`. Las mutaciones
-añaden `persisted`, `revision`, `fingerprint` y `result`. Un error de herramienta
-contiene `error.code`, `error.message` y `error.correlationId`, con `isError=true`.
-Las operaciones de lectura no alteran la revisión del modelo.
-En un lote, `operations` conserva las instantáneas de cada paso y lo indica con
-`operationResultsAreIntermediate=true`. `effectiveObjects` y los alias de
-`references` reflejan el estado después de ejecutar todo el lote, incluidas
-actualizaciones posteriores o eliminaciones.
+## Status and boundaries
 
-### Flujo recomendado
+This is an **initial development release**, not a claim of compatibility with
+every Archi version, operating system, MCP client, or third-party extension.
 
-1. Crear o abrir un archivo con `axioma_model` y conservar su `modelId`.
-2. Consultar tipos y relaciones válidas, sin inventar nombres de tipos.
-3. Preparar un lote de elementos, relaciones y representaciones visuales.
-4. Usar `dryRun=true` si se quiere comprobarlo sin escribir.
-5. Confirmar el lote con la revisión o huella consultada.
-6. Consultar la vista o exportarla; verificar `persisted` y la revisión devuelta.
+- Editing and persistence do not start a workbench. Export still uses SWT and
+  installed fonts; Linux/Xvfb operation has not been verified.
+- The server uses **stdio**, not the legacy HTTP tool/resource contract.
+- File conflict checks do not lock the Save button in other applications.
+- Local history is not an off-machine backup, and uncertain requests must not
+  be blindly replayed.
 
-Ejemplo de argumentos para un lote, usando el `modelId` real devuelto al crear:
+See [operations](docs/headless-operations.md), [changelog](CHANGELOG.md), and
+[security reporting](SECURITY.md) for details.
 
-```json
-{
-  "action": "apply",
-  "modelId": "ID_REAL_DEL_MODELO",
-  "operations": [
-    {"domain": "element", "action": "create", "type": "BusinessActor", "name": "Operador", "as": "actor"},
-    {"domain": "view", "action": "create", "name": "Vista de negocio", "as": "vista"},
-    {"domain": "view", "action": "addElement", "viewId": "$vista.id", "elementId": "$actor.id", "x": 30, "y": 30}
-  ]
-}
-```
+## Built on open-source foundations
 
-## Persistencia y límites actuales
+Axioma is a fork of [fanievh/archi-mcp-server](https://github.com/fanievh/archi-mcp-server)
+by JS van Heerden. It preserves upstream history, attribution, and the MIT
+license, and selectively reuses the original geometry/layout implementation.
+Archi and bundled dependencies retain their own licenses and notices.
 
-- `revision` pertenece a la sesión y vuelve a cero al reabrir el archivo en otro
-  proceso. `fingerprint` es la huella SHA-256 del contenido y sirve entre sesiones.
-- El bloqueo lateral coordina escritores Axioma. Con escritores ajenos, como
-  Archi GUI, la detección es optimista: se comprueba la huella antes y después
-  de preparar el guardado. No constituye un bloqueo distribuido de otras aplicaciones.
-- El historial es local y no se elimina automáticamente. No sustituye una copia
-  externa del equipo. `restore` también conserva el estado que reemplaza.
-- Ante una pérdida de conexión durante un guardado, consultar el archivo y su
-  huella antes de repetir la operación. No hay repetición idempotente automática.
-- Las imágenes deben quedar referenciadas dentro de la misma transacción:
-  `image.add` acepta `id` de un perfil u objeto que admita imagen; también puede
-  usarse un lote con importación y `view.addImage`. Archi no conserva una
-  biblioteca de imágenes huérfanas y Axioma no acredita una importación que se perdería.
-- Para cambiar los extremos de una relación representada, retirar sus conexiones
-  visuales, ejecutar `reconnect` y añadir las nuevas conexiones dentro de un lote.
-- ELK enruta conexiones entre objetos. Las conexiones cuyo extremo es otra
-  conexión se conservan y se informan en `notRouted`; pueden configurarse con
-  `setBendpoints`. No se afirma que ELK las haya enrutado.
-- El render usa SWT y fuentes, pero no un workbench ni ventanas visibles.
-  En Linux requiere un servidor gráfico, por ejemplo Xvfb; ese entorno aún
-  no está acreditado. El núcleo no inicia `Display` para editar o guardar.
-- No están implementadas en el servidor nuevo las 70 herramientas HTTP ni los
-  recursos del complemento anterior con sus mismos nombres.
-- La actualización de vistas abiertas requiere instalar y habilitar por separado
-  el [adaptador Live](live/README.md). Se pausa ante cambios locales sin guardar;
-  no realiza fusiones automáticas de ediciones humanas simultáneas.
-
-## Ejecutar la aceptación
-
-```powershell
-python -m pip install -r ./tools/requirements-headless-test.txt
-python ./tools/test_headless.py
-python ./tools/test_headless_extended.py
-python ./tools/test_headless_concurrency.py
-```
-
-Las tres pruebas ejecutan el transporte stdio real. La primera comprueba múltiples
-modelos, persistencia tras reinicio, layout, transparencia y errores. La segunda
-recorre el catálogo nativo completo, representaciones, perfiles, imágenes,
-historial, borrados transitivos y conflictos entre dos procesos.
-La tercera comprueba 24 peticiones concurrentes, rechazo de revisiones obsoletas,
-bloqueo real del archivo y recuperación después de liberarlo.
-
-Los resultados y transcripciones se conservan localmente en `.axioma-local/`.
-Las pruebas observan salida, CPU y E/S del árbol administrado; no cancelan una
-operación viva por su duración total.
-
-Para acreditar también la visualización en vivo, compilar y preparar el adaptador
-en el runtime aislado y ejecutar el circuito con el workbench real:
-
-```powershell
-./tools/build-live.ps1
-./tools/prepare-live.ps1
-python ./tools/test_live.py
-```
-
-Esta prueba utiliza los menús y editores nativos, dos modelos abiertos, cambios
-estructurales y rápidos consecutivos, conflictos humanos, archivos inválidos,
-reintento y continuidad del servidor después de cerrar la GUI. El paquete opcional
-se genera con `./tools/package-live.ps1`.
-
-Para generar una distribución compilada:
-
-```powershell
-./tools/package-headless.ps1
-```
-
-## Organización y atribución
-
-- `headless/src/.../core`: casos de uso, registro multimodelo y contrato de entrada.
-- `headless/src/.../persistence`: formato nativo, rutas, huellas e historial.
-- `headless/src/.../archi`: adaptación del metamodelo, imágenes y render.
-- `headless/src/.../protocol`: aplicación Equinox, catálogo y transporte MCP.
-- `headless/src/net/.../AxiomaLayoutBridge.java`: puente al motor ELK reutilizado.
-- `net.vheerden.archi.mcp`: línea base original y dependencias versionadas.
-- `live`: adaptador gráfico opcional, comparación/fusión y aceptación con Archi real.
-
-Partimos de [fanievh/archi-mcp-server](https://github.com/fanievh/archi-mcp-server),
-de JS van Heerden. Conservamos licencia, atribución e historial y reutilizamos
-su motor geométrico. [Dependencias y licencias](headless/DEPENDENCIAS.md).
+[Explore the source](https://github.com/h0w4r/archi-mcp-axioma) ·
+[Report an issue](https://github.com/h0w4r/archi-mcp-axioma/issues) ·
+[Back to top](#archi-mcp-axioma)

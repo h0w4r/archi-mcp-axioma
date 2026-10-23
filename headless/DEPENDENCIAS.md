@@ -1,29 +1,33 @@
-# Dependencias del servidor headless
+# Headless server dependencies
 
-El código nuevo y la línea base conservan la licencia MIT del repositorio.
-Las dependencias mantienen sus respectivas licencias y avisos. La distribución
-de Axioma no cambia las condiciones de las bibliotecas incluidas.
+New code and the inherited baseline retain the repository's MIT license.
+Dependencies keep their respective licenses and notices; the Axioma
+installation does not change those terms.
 
-| Dependencia | Procedencia utilizada |
+| Dependency | Source used |
 | --- | --- |
-| Archi, EMF, Equinox, SWT, GEF y Guava | Distribución instalada de Archi 5.10.0 |
-| SDK Java MCP 0.17.2, Reactor y Reactive Streams | Bibliotecas ya versionadas de la línea base |
-| Jackson 2.16.1, SnakeYAML, validadores JSON e ITU | Bibliotecas ya versionadas de la línea base |
-| SLF4J 2.0.11 | Biblioteca ya versionada de la línea base |
-| ELK 0.11.0 y Xbase 2.37.0 | Bibliotecas ya versionadas de la línea base |
-| Batik 1.17, XML APIs Ext 1.3.04, XML Graphics Commons 2.9 y Commons IO 2.14.0 | Exportador SVG oficial incluido con Archi |
-| psutil | Sólo el cliente de aceptación, no el servidor de producción |
+| Archi, EMF, Equinox, SWT, GEF, and Guava | Local Archi 5.10.0 distribution |
+| Java MCP SDK 0.17.2, Reactor, and Reactive Streams | Dependencies already versioned in the baseline |
+| Jackson 2.16.1, SnakeYAML, JSON validators, and ITU | Dependencies already versioned in the baseline |
+| SLF4J 2.0.11 | Dependency already versioned in the baseline |
+| ELK 0.11.0 and Xbase 2.37.0 | Dependencies already versioned in the baseline |
+| Batik 1.17, XML APIs Ext 1.3.04, XML Graphics Commons 2.9, and Commons IO 2.14.0 | Official SVG exporter included with Archi |
+| psutil | Acceptance client only, not the production server |
 
-El compilador no descarga una versión flotante de estas dependencias. Reutiliza
-las bibliotecas disponibles y falla si faltan los archivos esperados. Los JAR
-incluidos conservan sus avisos internos `META-INF/LICENSE*` y `NOTICE*`.
-El paquete incluye la licencia MIT original del repositorio.
+The compiler does not download floating dependency versions. It reuses the
+available libraries and fails if expected files are missing. Included JARs
+retain their internal `META-INF/LICENSE*` and `NOTICE*` files. Packages include
+the original repository MIT license.
 
-La preparación del runtime copia una distribución local de Archi y no distribuye
-una licencia sustitutiva de esa aplicación ni de los componentes Eclipse.
-La integración no requiere instalar jArchi ni adquirir un binario de jArchi.
+Runtime preparation copies a local Archi distribution. It does not grant a
+replacement license for Archi or Eclipse components. Neither installing jArchi
+nor purchasing a jArchi binary is required. Existing jArchi scripts remain
+independent of the server.
 
-El núcleo del servidor no incluye Jetty ni escucha un puerto de red. El
-transporte de esta distribución es stdio. Las dependencias HTTP y el control
-de aprobación del complemento gráfico permanecen en la línea base, no en el
-bundle headless.
+The headless bundle does not include Jetty or listen on a network port. Its
+transport is stdio. HTTP dependencies and GUI approval controls remain in the
+legacy component, not in the headless bundle.
+
+The optional Live companion additionally uses EMF Compare and EMF Change from
+the installed Archi 5.10 distribution. It does not require jArchi or a separate
+network service.

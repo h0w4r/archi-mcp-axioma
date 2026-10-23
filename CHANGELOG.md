@@ -1,5 +1,16 @@
 # Changelog
 
+## Documentation refresh (22/10/2026)
+
+- Rebuilds the English README around a branded banner, quick start, capability
+  overview, workflow comparison, and task-oriented documentation links.
+- Separates setup, tool reference, model safety, architecture, and development
+  into focused English guides with a shared documentation hub.
+- Clarifies that existing jArchi installations are independent of Axioma and
+  that Live is a separate optional companion.
+- Marks inherited GUI/HTTP guides so they are not confused with the current
+  headless server; preserves their technical content and upstream attribution.
+
 ## Adaptador Live opcional (22/10/2026)
 
 - Añade sincronización sobre los modelos y editores que ya están abiertos,

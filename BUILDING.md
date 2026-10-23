@@ -1,11 +1,14 @@
 # Building Archi MCP Server from source
 
+> **Legacy GUI/HTTP build guide.** For Axioma headless and Live builds, tests, and
+> packages, use the [current development guide](docs/headless-development.md).
+
 This guide covers how to set up a build environment, run the test suite, and build the
 installable plug-in from source.
 
 For **what the project does** and **how to install/use the released plug-in**, see the
-[README](README.md). For **architecture** (layer boundaries, project structure, key decisions),
-see the README's *Developer Guide* section.
+[legacy README](README-LEGADO.md). For **architecture** (layer boundaries, project
+structure, key decisions), see the [legacy architecture guide](docs/architecture.md).
 
 ---
 

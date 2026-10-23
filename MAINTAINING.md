@@ -1,5 +1,8 @@
 # Maintaining Archi MCP Server
 
+> **Inherited GUI/HTTP maintenance guide.** Axioma's current headless and Live
+> build/acceptance paths are documented in the [development guide](docs/headless-development.md).
+
 Notes for the project maintainer. This is **not** a contribution guide — the public repository
 does not accept pull requests. For building and testing from source, see [BUILDING.md](BUILDING.md).
 
