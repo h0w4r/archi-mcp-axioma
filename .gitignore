@@ -19,3 +19,6 @@ archi-report/
 .axioma/
 dist/
 *.axioma.lock
+
+# Legacy installers remain upstream and in Git history, not in the working checkout.
+/bin/*.archiplugin

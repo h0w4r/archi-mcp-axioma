@@ -1,5 +1,14 @@
 # Changelog
 
+## Artifact cleanup (23/10/2026)
+
+- Removes historical GUI/HTTP installers from the working checkout; upstream
+  releases and Git history retain them.
+- Keeps current installation packages in the ignored local `dist/` directory
+  and excludes legacy installers from future additions.
+- Points the legacy installation instructions to upstream releases and the
+  current Axioma documentation instead of obsolete local binaries.
+
 ## Documentation refresh (22/10/2026)
 
 - Rebuilds the English README around a branded banner, quick start, capability

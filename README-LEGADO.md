@@ -56,7 +56,7 @@ y recetas de puntos de vista para agentes.
 
 ## Installation
 
-1. Para utilizar la línea base, descarga el `.archiplugin` de las [versiones del proyecto de origen](https://github.com/fanievh/archi-mcp-server/releases) o usa los artefactos heredados de `bin/`. Estos binarios conservan la identidad original; todavía no hay una distribución propia de Axioma.
+1. For the original GUI/HTTP component, obtain its `.archiplugin` from the [upstream releases](https://github.com/fanievh/archi-mcp-server/releases). Historical installers are no longer retained in this checkout. For the current Axioma headless server and optional Live companion, follow the [current README](README.md).
 2. In Archi: **Help > Manage Plug-ins > Install New...** or copy to Archi's `dropins/` folder
 3. Restart Archi
 
